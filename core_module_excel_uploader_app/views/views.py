@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 """ Excel uploader module
 """
 from xlrd import open_workbook
@@ -8,6 +10,9 @@ from core_parser_app.tools.modules.views.builtin.popup_module import AbstractPop
 from core_parser_app.tools.modules.views.module import AbstractModule
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 class ExcelUploaderModule(AbstractPopupModule):
     """ Excel Uploader Module
@@ -85,7 +90,13 @@ class ExcelUploaderModule(AbstractPopupModule):
                     row_values = []
 
                     for col_index in range(sheet.ncols):
-                        cell_text = str(sheet.cell(row_index, col_index).value)
+                        cell_text = sheet.cell(row_index, col_index).value
+
+
+                        if isinstance(cell_text, unicode):
+                            cell_text = unicode(cell_text)
+                        else:
+                            cell_text = str(cell_text)
 
                         if row_index == 0:
                             self.table['headers'].append(cell_text)
@@ -95,7 +106,7 @@ class ExcelUploaderModule(AbstractPopupModule):
                     if len(row_values) != 0:
                         self.table['values'].append(row_values)
 
-                self.table_name = str(input_excel)
+                self.table_name = unicode(input_excel)
             except:
                 pass
 
